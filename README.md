@@ -5,8 +5,17 @@
 适用于 ERP、WMS、进销存、供应链、订单、采购、销售、出入库、物流面单、标签、小票等业务系统。
 
 插件图片：
+
+![1.png](https://raw.gitcode.com/user-images/assets/9951208/d3e2d081-b413-413d-9ffe-f6d99912e43b/1.png '1.png')
+
+![2.png](https://raw.gitcode.com/user-images/assets/9951208/2016b2ca-045e-46e1-b241-b132ee3e9fe2/2.png '2.png')
+
+![3.png](https://raw.gitcode.com/user-images/assets/9951208/17a9244a-ad06-4e04-9c08-5411929f1be9/3.png '3.png')
+
 ![ScreenShot_2026-05-25_184743_069.png](https://raw.gitcode.com/user-images/assets/9951208/1d6eb085-e1fa-4ea8-87b0-1c335c801c45/ScreenShot_2026-05-25_184743_069.png 'ScreenShot_2026-05-25_184743_069.png')
+
 ![ScreenShot_2026-05-05_223823_513.png](https://raw.gitcode.com/user-images/assets/9951208/ec3323d8-a6e0-4608-9492-2b319055c76e/ScreenShot_2026-05-05_223823_513.png 'ScreenShot_2026-05-05_223823_513.png')
+
 ![ScreenShot_2026-05-25_185006_988.png](https://raw.gitcode.com/user-images/assets/9951208/a8935671-e934-4ffb-89fa-febd6950fad9/ScreenShot_2026-05-25_185006_988.png 'ScreenShot_2026-05-25_185006_988.png')
 
 ---
@@ -207,7 +216,7 @@
 
 本项目用于商业授权合作。
 可支持以下授权模式：
-- 源码授权版(<span style="color:#e60000;">**￥599**</span>)
+- 源码授权版(<span style="color:#e60000;">**￥650**</span>，无票)
 
 具体价格、授权范围、更新方式、售后支持，请联系作者沟通。
 
