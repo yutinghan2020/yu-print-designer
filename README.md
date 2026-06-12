@@ -1,126 +1,553 @@
-# 打印模板设计器
+# Vue3 打印模板可视化设计器
 
-企业级可视化打印模板设计器插件，支持拖拽排版、动态字段绑定、表格明细、图片、条码、二维码、自定义纸张，以及 Web / LODOP 双打印模式。
-
-适用于 ERP、WMS、进销存、供应链、订单、采购、销售、出入库、物流面单、标签、小票等业务系统。
-
-插件图片：
-
-![1.png](https://raw.gitcode.com/user-images/assets/9951208/d3e2d081-b413-413d-9ffe-f6d99912e43b/1.png '1.png')
-
-![2.png](https://raw.gitcode.com/user-images/assets/9951208/2016b2ca-045e-46e1-b241-b132ee3e9fe2/2.png '2.png')
-
-![3.png](https://raw.gitcode.com/user-images/assets/9951208/17a9244a-ad06-4e04-9c08-5411929f1be9/3.png '3.png')
-
-![ScreenShot_2026-05-25_184743_069.png](https://raw.gitcode.com/user-images/assets/9951208/1d6eb085-e1fa-4ea8-87b0-1c335c801c45/ScreenShot_2026-05-25_184743_069.png 'ScreenShot_2026-05-25_184743_069.png')
-
-![ScreenShot_2026-05-05_223823_513.png](https://raw.gitcode.com/user-images/assets/9951208/ec3323d8-a6e0-4608-9492-2b319055c76e/ScreenShot_2026-05-05_223823_513.png 'ScreenShot_2026-05-05_223823_513.png')
-
-![ScreenShot_2026-05-25_185006_988.png](https://raw.gitcode.com/user-images/assets/9951208/a8935671-e934-4ffb-89fa-febd6950fad9/ScreenShot_2026-05-25_185006_988.png 'ScreenShot_2026-05-25_185006_988.png')
+一个基于 **Vue 3 + TypeScript** 的打印模板可视化设计器插件，专为 ERP/业务系统嵌入独立的打印模板设计页而打造。支持拖拽式画布布局、多组件类型、双打印引擎（Web 打印 / LODOP 打印）、条件显示、分页预览等核心能力，让打印模板的设计像搭积木一样简单。
 
 ---
 
-## 你是不是正遇到这些问题
+## 📸 效果预览
 
-- 每新增一种单据，都要单独开发一套打印模板
-- 不同客户的打印格式不一样，改一次模板就要重新发版
-- 业务想自己调整打印内容，但前端没法给他们配置能力
-- 浏览器打印和 LODOP 打印维护两套逻辑，成本高
-- 表格、条码、二维码、图片这些打印元素处理起来很麻烦
-- 面单、标签、小票这类非标准纸张适配困难
+### 整体设计界面
 
-如果你有这些问题，这个插件就是为这类场景准备的。
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/整体.png" alt="整体设计界面" /></div>
 
----
+设计器采用经典的 **三栏布局**：
 
-## 这是什么
-
-这是一套可以直接集成到后台系统中的打印模板设计器。
-
-它不是简单的打印示例，也不是单一页面的演示代码，而是一套可用于项目交付和商业落地的打印模板方案，核心目标是让你的系统具备：
-
-- 模板可视化设计能力
-- 模板保存与回显能力
-- 业务字段动态绑定能力
-- 多种打印组件组合能力
-- Web / LODOP 双模式输出能力
-- 标准纸张与自定义纸张支持能力
+| 区域             | 功能                                     |
+| ---------------- | ---------------------------------------- |
+| **左侧栏**       | 组件列表 + 已放置组件图层管理            |
+| **中间画布**     | 可视化拖拽画布，带毫米级标尺，所见即所得 |
+| **右侧属性面板** | 纸张设置 + 选中组件的属性配置            |
 
 ---
 
-## 能解决什么问题
+### 顶部操作区
 
-### 1. 降低打印模板开发成本
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/顶部的操作区.png" alt="顶部操作区" /></div>
 
-原本每一种单据都要开发单独模板，现在统一改为设计器配置，减少重复开发。
-
-### 2. 提高项目交付效率
-
-客户新增单据、调整布局、修改字段时，不再每次都改代码，可以通过模板设计快速完成。
-
-### 3. 统一打印能力
-
-把采购单、销售单、出库单、物流面单、标签等打印需求统一沉淀为同一套能力。
-
-### 4. 支持复杂业务场景
-
-不仅支持普通文本，还支持表格、图片、条码、二维码、自定义纸张等业务常见需求。
+- **返回按钮**：可自定义文案与回调
+- **模板名称**：显示当前正在设计的模板
+- **撤销 / 重做**：完整的历史操作栈，支持多步撤销与重做
+- **批量排版工具**：左对齐、水平居中、右对齐、横向分布、顶部对齐、垂直居中、底部对齐、纵向分布
+- **保存按钮**：一键保存设计 JSON
 
 ---
 
-## 核心功能
+### 左侧组件列表
 
-### 可视化设计
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/左侧的组件列表.png" alt="左侧组件列表" /></div>
 
-- 拖拽式模板设计
-- 自由调整组件位置与大小
-- 字体、字号、颜色、对齐方式可配置
-- 图层管理、锁定、隐藏、复制、删除
-- 元素边框与层级控制
-
-### 打印组件
-
-- 文本字段
-- 自定义标题
-- 图片组件
-- 表格组件
-- 条码组件
-- 二维码组件
-
-### 表格能力
-
-- 自定义列
-- 列宽调整
-- 行数控制
-- 表头显示控制
-- 表头样式控制
-- 合计列与合计行支持
-
-### 纸张能力
-
-- A4
-- A5
-- Letter
-- 通用自定义纸张
-- 业务固定尺寸纸张
-- 标签纸、面单纸、小票纸等非标准尺寸支持
-
-### 打印能力
-
-- 浏览器预览打印
-- LODOP 预览打印
-- 模板设计 JSON 直接驱动打印
-
-### 集成能力
-
-- 支持字段库自定义
-- 支持模板加载与模板保存
-- 支持业务数据直接打印
-- 支持适配器模式接入现有系统
-- 支持 Vue2.7 / Vue3 项目集成
+- **组件库分组展示**：支持业务自定义字段分组（如「基础组件」「订单信息」等）
+- **拖拽添加**：从左侧拖拽组件到画布即可添加，支持文本、标题、日期、金额、表格、图片、条码、二维码、横线、竖线、页码等多种组件类型
 
 ---
 
+### 左侧已放置组件（图层管理）
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/左侧的已放置的组件.png" alt="左侧已放置组件" /></div>
+
+- **图层列表**：按 Z 轴顺序显示所有已放置的组件
+- **拖拽排序**：支持拖拽调整图层顺序
+- **显示/隐藏**：一键切换组件的可见性
+- **锁定/解锁**：锁定后组件不可选中与移动
+- **快速定位**：点击图层项自动选中对应组件
+
+---
+
+### 中间画布区
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/中间的画布区.png" alt="中间画布区" /></div>
+
+- **毫米级标尺**：水平和垂直标尺，精准定位
+- **毫米网格背景**：辅助对齐，可开关
+- **纸张边距/页眉/页脚**：可视化区域标识
+- **拖拽移动**：组件可在画布上自由拖拽移动
+- **8 点缩放**：支持四角 + 四边中点拖拽缩放
+- **智能对齐线**：移动/缩放时自动显示与相邻组件的对齐参考线
+- **键盘操作**：方向键微调位置（1mm/步），Shift+方向键快速移动（10mm/步）
+- **多选操作**：Ctrl/Shift+点击多选，支持批量移动与删除
+
+---
+
+### 右侧属性配置区
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/右侧的属性配置区.png" alt="右侧属性配置区" /></div>
+
+**未选中组件时**：显示纸张设置
+
+- 纸张尺寸（A4 / A5 / LETTER / 自定义）
+- 纸张背景色
+- 页边距（上下左右，精确到 0.5mm）
+- 页眉/页脚配置（文本、高度、显示模式）
+- 页码配置（位置、格式、字号、颜色、加粗）
+- 打印补偿（上下左右）
+- 打印模式（Web 打印 / LODOP 打印）
+
+**选中组件时**：显示该组件的属性配置，分为多个配置区：
+
+- 基础信息（组件名称、关联字段、位置尺寸等）
+- 样式位置配置
+- 数据配置（根据组件类型不同而不同）
+- 条件显示配置
+
+---
+
+### 各组件的数据配置
+
+#### 文本组件 — 基础信息 + 数据配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/文本组件-基础信息-数据配置.png" alt="文本组件配置" /></div>
+
+- 组件名称、数据字段绑定
+- 文本前缀/后缀拼接
+- 字体、字号、颜色、对齐方式等样式设置
+
+#### 文本组件 — 样式位置配置 + 操作
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/文本组件-样式位置配置-操作.png" alt="文本组件样式" /></div>
+
+- X/Y 坐标、宽高（精确到 mm）
+- 锁定/解锁、显示/隐藏、复制、删除、上移/下移/置顶/置底
+
+#### 表格组件的数据配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/表格组件的数据配置项.png" alt="表格组件配置" /></div>
+
+- 表格列定义（列标题、字段名、列宽）
+- 支持预设列选择（开启 `enableCustomTableColumns`）
+- 表头样式、行样式、边框样式等
+
+#### 日期组件的数据配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/日期组件的数据配置项.png" alt="日期组件配置" /></div>
+
+- 日期格式（YYYY-MM-DD / YYYY年MM月DD日 等）
+- 数据字段绑定
+
+#### 金额组件的数据配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/金额组件的数据配置项.png" alt="金额组件配置" /></div>
+
+- 金额格式化（千分位、小数位数）
+- 大写金额转换
+- 数据字段绑定
+
+#### 图片组件的数据配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/图片组件的数据配置项.png" alt="图片组件配置" /></div>
+
+- 图片 URL（支持数据字段绑定 / 静态 URL / 本地上传）
+- 图片适配模式（拉伸、适应、填充等）
+- 图片上传配置
+
+#### 组件的条件显示配置
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/组件的条件显示配置项.png" alt="条件显示配置" /></div>
+
+- 开启/关闭条件显示
+- 条件字段、比较运算符（等于/不等于/大于/小于/包含/为空等）
+- 条件值
+- 满足条件时才显示该组件
+
+---
+
+### 设计打印预览
+
+<div align="center"><img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/设计打印预览.png" alt="设计打印预览" /></div>
+
+- 支持在设计器中直接预览打印效果
+- 支持 Web 打印预览和 LODOP 打印预览
+- 预览窗口可切换不同数据行查看
+
+---
+
+### 订单打印效果
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/订单打印1.png" alt="订单打印1" />
+  <img src="https://raw.githubusercontent.com/yutinghan2020/yu-print-designer/main/data/images/订单打印2.png" alt="订单打印2" />
+</div>
+
+---
+
+## ✨ 核心特性
+
+| 特性 | 说明 |
+| --- | --- |
+| 🖱️ **拖拽式设计** | 从组件库拖拽到画布，自由摆放、缩放、旋转 |
+| 🎨 **丰富的组件类型** | 文本、标题、日期、金额、表格、图片、条码、二维码、横线、竖线、页码共 11 种 |
+| 📏 **毫米级精度** | 双标尺 + 毫米网格，精确定位到 0.5mm |
+| 🔲 **智能对齐** | 拖拽/缩放时自动显示对齐辅助线 |
+| 📋 **批量排版** | 多选组件后一键左对齐、居中、右对齐、横向/纵向分布 |
+| ↩️ **撤销/重做** | 完整的历史操作栈，支持多步撤销与重做 |
+| 🖨️ **双打印引擎** | 同时支持 Web 打印（浏览器原生）和 LODOP 精确打印 |
+| 📄 **自动分页** | 根据纸张尺寸和内容自动计算分页，表格跨页自动续打表头 |
+| 🔍 **条件显示** | 组件可配置条件表达式，满足条件时才显示 |
+| 📸 **图片支持** | 支持静态 URL、数据字段绑定、本地上传三种方式 |
+| 🏷️ **条码/二维码** | 内置 JsBarcode 和 QRCode，支持多种条码格式 |
+| 🔢 **页眉/页脚/页码** | 可配置页眉页脚文本、页码位置与格式 |
+| 🔌 **插件化架构** | 通过适配器模式解耦业务接口，轻松对接任意后端 |
+| 🎯 **适配器模式** | 提供 `createPrintDesignerSimpleAdapter` 快速对接业务 API |
+| 📱 **响应式设计** | 自适应页面高度，支持各种屏幕尺寸 |
+
+---
+
+## 🚀 快速开始
+
+### 开发环境
+
+| 环境       | 版本要求                 |
+| ---------- | ------------------------ |
+| Node.js    | >= 16.x                  |
+| Vue        | 3.x                      |
+| TypeScript | >= 4.x                   |
+| 包管理器   | pnpm（推荐）/ npm / yarn |
+
+### 安装依赖
+
+插件内置了条码和二维码组件，需要安装以下依赖：
+
+```bash
+# pnpm
+pnpm add jsbarcode qrcode
+
+# npm
+npm install jsbarcode qrcode
+
+# yarn
+yarn add jsbarcode qrcode
+```
+
+### 引入插件
+
+#### 方式一：组件引入（推荐）
+
+```ts
+import { PrintDesignerPage } from '@/packages/print-designer'
+```
+
+#### 方式二：全局插件引入
+
+```ts
+// main.ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import PrintDesignerPlugin from '@/packages/print-designer/print'
+
+const app = createApp(App)
+app.use(PrintDesignerPlugin) // 注入全局方法 $printByTemplateDesign
+```
+
+#### 方式三：自定义插件参数
+
+```ts
+import { createPrintDesignerPlugin } from '@/packages/print-designer/print'
+
+app.use(
+  createPrintDesignerPlugin({
+    globalPropertyName: '$customPrint',
+    exposeOnWindow: true,
+    windowPropertyName: 'customPrint'
+  })
+)
+```
+
+---
+
+## 📦 导出能力
+
+| 导出项                             | 类型 | 说明                             |
+| ---------------------------------- | ---- | -------------------------------- |
+| `PrintDesignerPage`                | 组件 | 设计器页面主组件（完整三栏布局） |
+| `PrintDesignerSidebar`             | 组件 | 左侧栏组件（组件库 + 图层管理）  |
+| `PrintDesignerCanvas`              | 组件 | 中间画布组件（拖拽设计区域）     |
+| `PrintDesignerPropsPanel`          | 组件 | 右侧属性面板组件                 |
+| `createPrintDesignerSimpleAdapter` | 函数 | 快速创建业务适配器               |
+| `printByTemplateDesign`            | 函数 | 按设计 JSON 直接打印             |
+| `PrintDesignerPlugin`              | 插件 | Vue 全局打印插件                 |
+| `types.ts` 全部类型定义            | 类型 | 完整的 TypeScript 类型导出       |
+
+---
+
+## 📖 参数说明
+
+### PrintDesignerPage Props
+
+| 参数 | 类型 | 默认值 | 必填 | 说明 |
+| --- | --- | --- | --- | --- |
+| `templateId` | `number` | - | 否 | 当前模板 ID，用于加载模板信息与设计数据 |
+| `adapter` | `PrintDesignerAdapter` | 空实现 | 否 | 数据适配器，对接模板查询、字段库、设计保存 |
+| `defaultFieldLibrary` | `PrintDesignerFieldGroup[]` | 内置字段库 | 否 | 默认字段库（适配器未返回时使用） |
+| `enableCustomTableColumns` | `boolean` | `false` | 否 | 是否开启表格预设列选择 |
+| `presetTableColumns` | `PrintDesignerTableColumnOption[]` | `[]` | 否 | 预设表格列配置 |
+| `paperSizeOptions` | `Array` | `['A4', 'A5', 'LETTER']` | 否 | 纸张尺寸选项（自动追加"自定义"） |
+| `printDataList` | `Record<string, any>[]` | `[]` | 否 | 预览/打印用的测试数据 |
+| `title` | `string` | 模板名称 | 否 | 页面标题 |
+| `showBackButton` | `boolean` | `true` | 否 | 是否显示返回按钮 |
+| `backButtonText` | `string` | `返回` | 否 | 返回按钮文案 |
+| `saveButtonText` | `string` | `保存` | 否 | 保存按钮文案 |
+| `uploadConfig` | `PrintDesignerUploadConfig` | - | 否 | 图片上传配置 |
+| `onBack` | `() => void` | - | 否 | 自定义返回逻辑 |
+| `onSave` | `(context) => Promise` | - | 否 | 自定义保存逻辑 |
+
+### 组件事件
+
+| 事件名 | 参数                       | 说明               |
+| ------ | -------------------------- | ------------------ |
+| `back` | -                          | 点击返回按钮时触发 |
+| `save` | `PrintDesignerSaveContext` | 保存完成时触发     |
+
+### 暴露方法
+
+| 方法        | 签名                           | 说明                     |
+| ----------- | ------------------------------ | ------------------------ |
+| `getDesign` | `() => string`                 | 获取当前设计 JSON 字符串 |
+| `print`     | `(dataList, mode?) => Promise` | 使用当前设计直接打印     |
+
+---
+
+## 🧩 组件类型详解
+
+设计器支持 **11 种**画布组件类型：
+
+| 组件类型   | `itemType`   | 说明                                          |
+| ---------- | ------------ | --------------------------------------------- |
+| **文本**   | `field`      | 普通数据字段文本，支持前缀/后缀拼接           |
+| **标题**   | `title`      | 自定义标题文本，可独立设置样式                |
+| **日期**   | `date`       | 日期组件，支持多种日期格式                    |
+| **金额**   | `amount`     | 金额组件，支持千分位格式化与大写转换          |
+| **表格**   | `table`      | 列表表格组件，支持自定义列、跨页续打表头      |
+| **图片**   | `image`      | 图片组件，支持远程URL、本地上传、数据字段绑定 |
+| **条码**   | `barcode`    | 一维条码，基于 JsBarcode（CODE128、EAN13 等） |
+| **二维码** | `qrcode`     | 二维码，基于 QRCode                           |
+| **横线**   | `hline`      | 水平分割线                                    |
+| **竖线**   | `vline`      | 垂直分割线                                    |
+| **页码**   | `pageNumber` | 页码组件，支持自定义格式                      |
+
+---
+
+## 🔌 适配器说明
+
+设计器通过适配器模式与业务层解耦，你需要实现 `PrintDesignerAdapter` 接口：
+
+```ts
+interface PrintDesignerAdapter {
+  // 返回左侧字段库
+  getFieldLibrary(): Promise<PrintDesignerFieldGroup[]> | PrintDesignerFieldGroup[]
+
+  // 返回模板快照（模板信息 + 设计数据）
+  getTemplateSnapshot(templateId: number): Promise<PrintDesignerTemplateSnapshot>
+
+  // 保存设计 JSON（可选）
+  saveDesign?(params: {
+    templateId: number
+    templateDesignId?: number
+    design: string
+  }): Promise<{ id?: number }>
+}
+```
+
+### 快速创建适配器
+
+推荐使用 `createPrintDesignerSimpleAdapter` 快速生成适配器：
+
+```ts
+import { createPrintDesignerSimpleAdapter } from '@/packages/print-designer'
+
+const adapter = createPrintDesignerSimpleAdapter({
+  // 字段库
+  fieldLibrary: [
+    {
+      name: '订单字段',
+      fields: [
+        { key: 'orderNo', label: '订单号', itemType: 'field' },
+        { key: 'customerName', label: '客户名称', itemType: 'field' },
+        { key: 'items', label: '商品明细', itemType: 'table' }
+      ]
+    }
+  ],
+  // 查询模板信息
+  getTemplate: (id) => PrintTemplateApi.getPrintTemplate(id),
+  // 查询设计数据
+  getDesignByTemplateId: (id) => PrintTemplateDesignApi.getDesignByTemplateId(id),
+  // 新增设计
+  createDesign: (params) => PrintTemplateDesignApi.create(params),
+  // 更新设计
+  updateDesign: (params) => PrintTemplateDesignApi.update(params)
+})
+```
+
+---
+
+## 🖨️ 打印引擎
+
+### Web 打印
+
+- 基于浏览器原生打印能力
+- 将设计 JSON 渲染为 HTML，通过 `window.print()` 输出
+- 支持预览、直接打印、获取 HTML 内容三种模式
+
+### LODOP 打印
+
+- 基于 LODOP 云打印控件
+- 毫米级精确定位，适合票据、运单等精确打印场景
+- 需要业务系统自行保证 LODOP 运行环境
+
+### 直接打印 API
+
+```ts
+import { printByTemplateDesign } from '@/packages/print-designer'
+
+// Web 打印预览
+await printByTemplateDesign(designJson, dataList, 'web')
+
+// LODOP 打印预览
+await printByTemplateDesign(designJson, dataList, { mode: 'lodop', action: 'preview' })
+
+// 直接打印
+await printByTemplateDesign(designJson, dataList, { mode: 'web', action: 'print' })
+
+// 获取打印 HTML 内容
+const html = await printByTemplateDesign(designJson, dataList, { mode: 'web', action: 'content' })
+```
+
+---
+
+## 📁 项目结构
+
+```
+print-designer/
+├── index.ts                          # 包入口，统一导出
+├── print.ts                          # 打印引擎入口
+├── simple.ts                         # 简易适配器工厂函数
+├── types.ts                          # 完整类型定义
+├── components/                       # 视图组件
+│   ├── PrintDesignerPage.vue         # 主页面（三栏布局容器）
+│   ├── PrintDesignerSidebar.vue      # 左侧栏（组件库 + 图层管理）
+│   ├── PrintDesignerCanvas.vue       # 中间画布（拖拽设计区）
+│   ├── PrintDesignerPropsPanel.vue   # 右侧属性面板
+│   ├── PrintDesignerColorPicker.vue  # 颜色选择器
+│   └── PrintDesignerSvgIcon.vue      # SVG 图标组件
+├── composables/                      # 组合式 API
+│   ├── useDesignerContext.ts         # 设计器核心上下文
+│   ├── useCanvasItems.ts             # 画布组件增删改查
+│   ├── useComponentStyles.ts         # 组件样式管理
+│   ├── useDragResize.ts              # 拖拽缩放交互
+│   ├── useHistory.ts                 # 撤销/重做历史栈
+│   ├── usePaperConfig.ts             # 纸张配置管理
+│   ├── useLocalStorage.ts            # 本地存储
+│   ├── useLodopPrint.ts              # LODOP 打印
+│   └── useNativeMessage.ts           # 消息提示
+└── print/                            # 打印引擎子模块
+    ├── units.ts                      # 单位转换工具
+    ├── paper.ts                      # 纸张尺寸处理
+    ├── normalize.ts                  # 参数规范化
+    ├── data.ts                       # 数据解析与条件判断
+    ├── table.ts                      # 表格数据处理
+    ├── pagination.ts                 # 分页计算
+    ├── styles.ts                     # 组件样式工具
+    ├── barcode.ts                    # 条码/二维码处理
+    ├── html-builder.ts               # HTML 生成
+    ├── web-print.ts                  # Web 打印
+    └── lodop.ts                      # LODOP 打印
+```
+
+---
+
+## 🎯 适用场景
+
+- **ERP 系统**：采购单、销售单、入库单、出库单等单据打印
+- **WMS 系统**：库位标签、商品标签、装箱单打印
+- **物流系统**：运单、快递面单打印
+- **财务系统**：凭证、发票、对账单打印
+- **任何需要自定义打印模板的业务系统**
+
+---
+
+## 📝 完整使用示例
+
+```vue
+<template>
+  <PrintDesignerPage
+    :template-id="templateId"
+    :adapter="designerAdapter"
+    :print-data-list="printDataList"
+    :enable-custom-table-columns="true"
+    :preset-table-columns="presetTableColumns"
+    :upload-config="uploadConfig"
+    title="采购订单打印模板"
+    back-button-text="返回列表"
+    save-button-text="保存模板"
+    @save="handleSaveEvent"
+    @back="handleBackEvent"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { PrintDesignerPage, createPrintDesignerSimpleAdapter } from '@/packages/print-designer'
+import { PrintTemplateApi } from '@/api/erp/print/template'
+import { PrintTemplateDesignApi } from '@/api/erp/print/printTemplateDesign'
+
+const templateId = 12
+
+// 打印测试数据
+const printDataList = [
+  {
+    orderNo: 'PO20260530001',
+    customerName: '测试客户',
+    totalPrice: 1280.5,
+    items: [
+      { name: '商品A', spec: 'XL', count: 2, price: 100 },
+      { name: '商品B', spec: 'L', count: 3, price: 200 }
+    ]
+  }
+]
+
+// 预设表格列
+const presetTableColumns = [
+  { title: '商品名称', field: 'name' },
+  { title: '规格', field: 'spec' },
+  { title: '数量', field: 'count' },
+  { title: '单价', field: 'price' }
+]
+
+// 图片上传配置
+const uploadConfig = {
+  url: '/admin-api/infra/file/upload',
+  headers: { Authorization: 'Bearer token-demo' },
+  responseUrlField: 'data'
+}
+
+// 创建适配器
+const designerAdapter = createPrintDesignerSimpleAdapter({
+  fieldLibrary: [
+    {
+      name: '订单字段',
+      fields: [
+        { key: 'orderNo', label: '订单号', itemType: 'field' },
+        { key: 'customerName', label: '客户名称', itemType: 'field' },
+        { key: 'totalPrice', label: '订单金额', itemType: 'amount' },
+        { key: 'items', label: '商品明细', itemType: 'table' }
+      ]
+    }
+  ],
+  getTemplate: (id) => PrintTemplateApi.getPrintTemplate(id),
+  getDesignByTemplateId: (id) => PrintTemplateDesignApi.getPrintTemplateDesignByTemplateId(id),
+  createDesign: (params) => PrintTemplateDesignApi.createPrintTemplateDesign(params),
+  updateDesign: (params) => PrintTemplateDesignApi.updatePrintTemplateDesign(params)
+})
+
+const handleSaveEvent = (context) => {
+  console.log('保存成功', context.design)
+}
+
+const handleBackEvent = () => {
+  console.log('点击了返回')
+}
+</script>
+```
+
+---
 ## 适用行业与场景
 
 ### 适用行业
